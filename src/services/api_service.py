@@ -1,6 +1,7 @@
 import requests, urllib3
 
 from services.cookie_manager import CookieManager
+from config.singleton_config import SingletonConfig
 
 ##Disable warning about unverified HTTPS requests
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

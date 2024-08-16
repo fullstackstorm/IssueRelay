@@ -1,10 +1,19 @@
+import os
 import requests
+from config.singleton_config import SingletonConfig
 
 API_URL = "https://api.example.com"
 
 class AuthenticationService:
     def __init__(self) -> None:
-        self.session = requests.Session()
+        self.config = SingletonConfig()
+        self.session = self.config.session
+
+    def authenticate(self):
+        """Ensure the cookie file exists or generate it if necessary."""
+        if not os.path.exists(self.cookie_file_path):
+            print('MIDWAY AUTHENTICATION\nInput will not display; press enter when done.')
+            os.system('cmd /c "mwinit -s"')  # Run MWInit to generate the cookie file
 
     def login(self, username, password):
         """Authenticate a user and return session cookies."""

@@ -3,19 +3,16 @@ import os
 import pathlib
 import tempfile
 import requests
+from config.singleton_config import SingletonConfig
 
 class CookieManager:
     def __init__(self, cookie_file_path=None):
+        self.session = requests.Session()
+        self.__verify_cookies(cookie_file_path)
         if cookie_file_path is None:
             self.cookie_file_path = os.path.join(pathlib.Path.home(), '.midway', 'cookie')
         else:
             self.cookie_file_path = cookie_file_path
-
-    def ensure_cookie_file_exists(self):
-        """Ensure the cookie file exists or generate it if necessary."""
-        if not os.path.exists(self.cookie_file_path):
-            print('MIDWAY AUTHENTICATION\nInput will not display; press enter when done.')
-            os.system('cmd /c "mwinit -s"')  # Run MWInit to generate the cookie file
 
     def create_cookie_jar(self):
         """Process the cookie file and return a MozillaCookieJar object."""
@@ -30,7 +27,17 @@ class CookieManager:
             cookies.load()
 
         os.remove(temp_file.name)
-        return cookies
+        self.session.cookies = cookies
+        self.__verify_cookies(self.cookie_file_path)
+    
+    def __verify_cookies(self, cookie_file_path=None):
+        try:
+            response = self.session.get('https://midway-auth.amazon.com/api/session-status')
+            status = response.json()
+            if not status['authenticated']: raise Exception
+        except Exception:
+            if cookie_file_path: os.remove(cookie_file_path)
+            self.create_cookie_jar()
 
     def get_cookies(session: requests.Session) -> requests.cookies.RequestsCookieJar:
         """Retrieve cookies from the session."""

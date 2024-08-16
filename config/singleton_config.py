@@ -18,6 +18,6 @@ class SingletonConfig:
         # Initialize a single session
         self.session = requests.Session()
         # Example: Set session headers or other settings from config
-        self.session.headers.update({
+        '''self.session.headers.update({
             'Authorization': f"Bearer {self.config.get('apiKey')}"
-        })
+        })'''
