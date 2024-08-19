@@ -1,5 +1,6 @@
 import requests, urllib3
 
+from services.auth_service import AuthenticationService
 from services.cookie_manager import CookieManager
 from config.singleton_config import SingletonConfig
 
@@ -10,8 +11,18 @@ API_URL = "https://maxis-service-prod-pdx.amazon.com/"
 
 class APIService:
     def __init__(self):
+        self.config = SingletonConfig()
+        self.session = self.config.session
+        self.authenticator = AuthenticationService()
+        self.authenticator.authenticate()
         self.cookie_manager = CookieManager()
         self.cookies = self.setup_cookies()
+
+    # src/services/service.py
+    def process_data():
+        # Example processing logic
+        return "Processed Data"
+
 
     def setup_cookies(self):
         """Set up cookies for the API handler."""

@@ -7,7 +7,8 @@ from config.singleton_config import SingletonConfig
 
 class CookieManager:
     def __init__(self, cookie_file_path=None):
-        self.session = requests.Session()
+        self.config = SingletonConfig()
+        self.session = self.config.session
         self.__verify_cookies(cookie_file_path)
         if cookie_file_path is None:
             self.cookie_file_path = os.path.join(pathlib.Path.home(), '.midway', 'cookie')
