@@ -17,6 +17,18 @@ class APIService:
         self.authenticator.authenticate()
         self.cookie_manager = CookieManager()
         self.cookies = self.setup_cookies()
+        self._sim_endpoint = self._page_token = ''
+
+    @staticmethod
+    def prepare_endpoint(process_name, process_folders):
+        process_id = (
+            process_folders[process_name] if process_name != ''
+            else '+OR+'.join(value for value in process_folders.values())
+        )
+        sim_status = 'Resolved'
+        date_range = '[NOW-28DAYS TO NOW]'
+        sort_order = 'lastUpdatedDate+desc'
+        _sim_endpoint = f'issues?q=containingFolder:({process_id})+status:({sim_status})+createDate:({date_range})&sort={sort_order}'
 
     # src/services/service.py
     def process_data():
